@@ -1,5 +1,5 @@
 #+TITLE: SafeOauth
-#+HTML: <img src="images/safelock.png" align="right">
+#+HTML: <img src="images/safelock.png" align="right" width="400" height="400">
 SafeOauth is a TOTP key manager that functions similarly to passmenu, providing a fast way to retrieve TOTP codes.
 The codes are stored locally and secured using GPG encryption to ensure their safety.
 
@@ -43,6 +43,7 @@ And add safeoauth as keybinding.
 
 * Demo
 [[file:images/demo.gif][<img src="images/demo.gif">]]
+
 
 * License
 AGPLv3
