@@ -4,7 +4,7 @@
 # Check Dependencies.
 function checkdeps() {
     # Define the list of commands to check
-    depends=("gpg" "pass" "zenity" "oathtool")
+    depends=("gpg" "pass" "zenity" "oathtool" "xclip")
     # Define arrays to store the results
     found=()
     missing=()
@@ -112,20 +112,33 @@ function otp_show() {
 
 # OTP Edit
 function otp_edit() {
-   # Add Later
-   exit 0
+    filename="$HOME/.config/.safeoauth.lst"
+    names=($(cat "$filename"))
+    selected_name=$(zenity --list --height=300 --width=150 --title "Select an entry" --text "Select an entry to edit" --column "Name" "${names[@]}")
+    if [[ -n "$selected_name" ]]; then
+        new_key=$(zenity --entry --height=300 --width=150 --text "Enter new key for $selected_name")
+        cmd_rep "pass show $selected_name" key
+        zenity --question --text "Are you sure you want to replace <b>$key</b> with <b>$new_key</b>."
+        confirm=$?
+        if [[ $confirm -eq 0 ]]; then
+            (echo $new_key; echo $new_key) | pass insert $selected_name
+            echo "Entry: $selected_name :: new_key: $new_key :: old_key: $key" >> $HOME/.config/.safeoauth.backup
+        else
+            zenity --info --text "You have chosen to cancel the editing." --timeout 10
+        fi
+    fi
 }
-
 
 checkdeps
 check_pass
-shortopts="csh"
-longopts=$(getopt -o $shortopts --long create,show,help -- "$@")
+shortopts="cshe"
+longopts=$(getopt -o $shortopts --long create,show,edit,help -- "$@")
 eval set -- "$longopts"
 while true; do
     case $1 in
         -c|--create) otp_new;;
         -s|--show) otp_show;;
+        -e|--edit) otp_edit;;
         -h|--help)
             echo "Usage: $0 [-c|--create] [-s|--show] [-h|--help]" >&2
             exit 1 ;;
