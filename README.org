@@ -1,0 +1,50 @@
+#+TITLE: SafeOauth
+#+HTML: <img src="images/safe.png" align="right">
+SafeOauth is a TOTP key manager that functions similarly to passmenu, providing a fast way to retrieve TOTP codes.
+The codes are stored locally and secured using GPG encryption to ensure their safety.
+
+* Difference between this and pass-otp.
+Couldn't find any integration with window managers, altho Xmonad has one others dont.
+Quick and easy just call it with just a keybinding in your window manager.
+
+* Dependencies.
+- =pass= for secret storing and encrypting via `gpg`
+- =oathtool= for generating totp codes.
+- =xclip= for copying totp codes.
+- =zenity= for dialogs and prompts.
+
+* Installation
+#+begin_src shell
+doas wget -O /usr/local/bin/safeoauth https://raw.githubusercontent.com/M1ndo/SafeOauth/main/safeoauth.sh
+doas chmod a+rx /usr/local/bin/safeoauth
+# OR
+git clone https://github.com/m1ndo/SafeOauth && cd SafeOauth
+doas make install
+#+end_src
+
+* Usage
+#+begin_src shell
+safeoauth --show # Show All Saved OTP's
+safeoauth --create # Create a new OTP Entry
+safeoauth --edit # Edit Existing Entries.
+#+end_src
+** Integration With Window Managers (Ex Xmonad)
+Add Zenity to ensure it becomes a floating dialog instead of a window.
+And add safeoauth as keybinding.
+#+begin_src haskell
+   className =? "Zenity"          --> doFloat
+----
+----
+  -- SafeOauth (Super-c)
+  , ("M-c s", spawn "safeoauth --show")
+  , ("M-c e", spawn "safeoauth --edit")
+  , ("M-c c", spawn "safeoauth --create")
+#+end_src
+
+* Demo
+[[file:/path/to/my.gif][<img src="images/demo.gif">]]
+
+* License
+AGPLv3
+
+#  LocalWords:  SafeOauth
